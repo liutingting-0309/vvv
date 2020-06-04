@@ -3,8 +3,6 @@ import VueRouter from 'vue-router'
 import Login from './components/login.vue'
 import Home from './components/home.vue'
 
-
-
 Vue.use(VueRouter)
 
 const router = new VueRouter({
