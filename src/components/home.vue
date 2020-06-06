@@ -11,48 +11,78 @@
     <!-- 页面主体区域 -->
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside width="200px">
+      <el-aside :width="collpseflag ?'64px':'200px'">
+        <div class="togglebtn" @click="toggleCollpse">|||</div>
         <el-menu
           default-active="2"
-          background-color="#545c64"
+          background-color="pink"
           text-color="#fff"
-          active-text-color="#ffd04b"
+          active-text-color="red"
+          :unique-opened="true"
+          :collapse="collpseflag"
+          :collapse-transition="false"
+          router
         >
-          <el-submenu index="1">
+        <!-- 一级菜单 -->
+          <el-submenu :index="item.id+''" v-for="item in menulist" :key="item.id" >
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <i :class="icons[item.id]"></i>
+              <span>{{ item.authName }}</span>
             </template>
-            <el-menu-item index="1-4-1">
+            <!-- 二级菜单 -->
+            <el-menu-item :index="'/'+ittem.path" v-for="ittem in item.children" :key="ittem.id">
                 <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>选项一</span>
+              <i class="el-icon-menu"></i>
+              <span>{{ ittem.authName }}</span>
             </template>
             </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
-      <!-- 右侧内容主体 -->
-      <el-main>Main</el-main>
+      <!-- 右侧内容主体 -->                                  
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
-</template>
+
 
 <script>
 export default {
-    created(){
-        this.getMenusList();
+  data() {
+      return {
+        // 左侧菜单栏数据
+        menulist:[],
+        icons:{
+          125:'el-icon-user-solid',
+          103:'el-icon-s-tools',
+          101:'el-icon-s-goods',
+          102:'el-icon-s-order',
+          145:'el-icon-s-data'
+        },
+        collpseflag:false,
+      }
+  },
+  created(){
+      this.getMenusList();
     },
   methods: {
     logout() {
       window.sessionStorage.clear();
       this.$router.push("/login");
     },
-     getMenusList(){
-        const result =  this.$http.get("menus");
-        console.log(result);
+     async getMenusList(){
+        const { data:res } = await this.$http.get("menus");
+        // console.log(res);
+        if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
+        this.menulist = res.data
+
     },
+    toggleCollpse(){
+      this.collpseflag = !this.collpseflag;
+      // console.log(this.collpseflag)
+    }
   }
 };
 </script>
@@ -90,7 +120,15 @@ export default {
   // background-color: #333744;
   background-color: pink;
   color: #fff;
+  .togglebtn{
+    height:25px;
+    background-color:pink;
+    text-align: center;
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
 }
+
 
 .el-main {
   background-color: #eaedf1;

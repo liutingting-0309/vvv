@@ -5,13 +5,8 @@ import './plugins/element.js'
 //导入全局样式表
 import './assets/css/global.css'
 import 'element-ui/lib/theme-chalk/index.css';
-
-import axios from 'axios'
-//配置请求的路径
-axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
-// axios.defaults.baseURL = 'https://www.liulongbin.top:8888/api/private/v1/'
-Vue.prototype.$http = axios
-
+Vue.use(router)
+import './js/axios.js'
 
 Vue.config.productionTip = false
  
