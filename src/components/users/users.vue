@@ -91,6 +91,7 @@ export default {
     handleCurrentChange(newPage){
       this.queryList.pagenum = newPage
       this.getusersList();
+    
     }
   }
 };
