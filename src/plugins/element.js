@@ -22,7 +22,8 @@ Col,
 Table,
 TableColumn,
 Switch,
-Pagination
+Pagination,
+Dialog
 } from 'element-ui'
 
 
@@ -48,4 +49,5 @@ Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Switch)
 Vue.use(Pagination)
+Vue.use(Dialog)
 Vue.prototype.$message = Message
