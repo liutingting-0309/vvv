@@ -44,7 +44,7 @@
               size="mini"
               @click="showEditDialog(scope.row.id)"
             ></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="showdeleteDialog(scope.row.id)"></el-button>
             <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
           </template>
         </el-table-column>
@@ -86,7 +86,7 @@
         </el-form>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="canceladdusersList">取 消</el-button>
         <el-button type="primary" @click="addusersList()">确 定</el-button>
       </span>
     </el-dialog>
@@ -114,7 +114,7 @@
         </el-form>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="editdialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editusersList()">确 定</el-button>
       </span>
     </el-dialog>
@@ -228,14 +228,19 @@ export default {
         if (!valid) return;
         // 可以发起添加用户的网络请求
         const { data: res } = await this.$http.post("users", this.addusersForm);
-
         if (res.meta.status !== 201) {
           this.$message.error("添加用户失败！");
         }
         this.$message.success("添加用户成功！");
         this.dialogVisible = false;
+        this.$refs.addusersFormRef.resetFields();
         this.getusersList();
       });
+    },
+    // 取消添加用户信息
+    canceladdusersList(){
+      this.dialogVisible = false;
+      this.$refs.addusersFormRef.resetFields();
     },
     // 展示编辑用户的对话框
     async showEditDialog(id){
@@ -249,21 +254,41 @@ export default {
 
     // 修改用户信息
     editusersList() {
-      this.$refs.editusersFormRef.validate(async valid => {
+      this.$refs.editusersFormRef.validate(async value => {
         if(!value) return
-        const {data: res} = await this.$http.put('users/${this.editusersForm.id}',{
+        const {data: res} = await this.$http.put('users/'+this.editusersForm.id,{
           email:this.editusersForm.email,
           mobile:this.editusersForm.mobile
         })
         if(res.meta.status !== 200){
-          return this.$http.error("更新用户信息失败！")
+          return this.$message.error("更新用户信息失败！")
         }
-
         // 关闭对话框
         this.editdialogVisible = false
         this.getusersList()
         this.$message.success("更新用户信息成功！")
       })
+    },
+    // 删除用户信息
+     showdeleteDialog(id){
+        this.$confirm('此操作将永久删除该用户信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http.delete('users/'+id)
+          this.getusersList();
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+        
     }
   }
 };
