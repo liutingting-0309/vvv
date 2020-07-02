@@ -11,14 +11,17 @@
       <el-input placeholder="请输入内容" class="input-with-select">
         <el-button slot="append" icon="el-icon-search"></el-button>
       </el-input>
-
       <template>
         <el-table :data="rightForm" style="width: 100%" stripe border>
           <el-table-column type="index" label="#"></el-table-column>
           <el-table-column prop="authName" label="权限名称"></el-table-column>
           <el-table-column prop="path" label="路径"></el-table-column>
           <el-table-column prop="level" label="权限层级">
-            
+            <template slot-scope="scope">
+                <el-tag v-if="scope.row.level == 0">一级</el-tag>
+                <el-tag type="success" v-else-if="scope.row.level == 1">二级</el-tag>
+                <el-tag type="warning" v-else>三级</el-tag>
+            </template>
           </el-table-column>
         </el-table>
       </template>
@@ -52,9 +55,9 @@ export default {
 
 <style lang="less" scoped>
 .el-breadcrumb {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 .el-table {
-  margin-top: 15px;
+  margin-top: 20px;
 }
 </style>
