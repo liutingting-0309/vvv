@@ -6,9 +6,11 @@ import './plugins/element.js'
 import './assets/css/global.css'
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(router)
+import TreeTable from 'vue-table-with-tree-grid'
 import './js/axios.js'
 
 Vue.config.productionTip = false
+Vue.component('tree-table',TreeTable)
  
 new Vue({
   router,

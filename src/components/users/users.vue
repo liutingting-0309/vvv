@@ -144,7 +144,7 @@
 
 <script>
 export default {
-  data() {
+  data() {  
     // 验证邮箱规则
     var checkEmail = (rule, value, callback) => {
       const regEmail = /^([a-zA-Z0-9_-])+@[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/;
