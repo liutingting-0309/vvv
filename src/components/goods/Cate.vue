@@ -127,7 +127,7 @@ export default {
       getCateForm:[],
       // 指定配置对象
       cascaderProps:{
-        value:'cat_pid',
+        value:'cat_id',
         label:'cat_name',
         children:'children',
         expandTrigger: 'hover',
