@@ -7,6 +7,7 @@ import Users from './components/users/users.vue'
 import Roles from './components/rights/roles.vue'
 import Rights from './components/rights/rights.vue'
 import Cate from './components/goods/Cate'
+import Params from './components/goods/Params'
 
 Vue.use(VueRouter)
 
@@ -23,21 +24,22 @@ const router = new VueRouter({
         { path: '/users', component: Users },
         { path: '/roles', component: Roles },
         { path: '/rights', component: Rights },
-        { path: '/categories',component: Cate},
+        { path: '/categories', component: Cate },
+        { path: '/params', component: Params }
       ]
     },
   ]
 })
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 //push 
-const VueRouterPush = VueRouter.prototype.push 
-VueRouter.prototype.push = function push (to) {
-    return VueRouterPush.call(this, to).catch(err => err)
+const VueRouterPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(to) {
+  return VueRouterPush.call(this, to).catch(err => err)
 }
 
 //replace
 const VueRouterReplace = VueRouter.prototype.replace
-VueRouter.prototype.replace = function replace (to) {
+VueRouter.prototype.replace = function replace(to) {
   return VueRouterReplace.call(this, to).catch(err => err)
 }
 
