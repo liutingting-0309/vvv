@@ -24,11 +24,11 @@
         :selection-type="false"
         :expand-type="false"
       >
-      <!-- 分类名称列 -->
+        <!-- 分类名称列 -->
         <template slot="isok" slot-scope="scope">
           <i
             class="el-icon-success"
-            v-if="scope.row.cat_deleted  === false" 
+            v-if="scope.row.cat_deleted  === false"
             style="color:lightgreen"
           ></i>
           <i class="el-icon-error" v-else style="color:red"></i>
@@ -59,32 +59,36 @@
     </el-card>
     <!-- 添加分类弹框 -->
     <el-dialog
-  title="添加分类"
-  :visible.sync="addCatedialogVisible"
-  @close="handleCloseaddCatedialog"
-  width="50%">
-  <el-form ref="addCateRef" :model="addCateForm" :rules="addCateFormRules" label-width="100px">
-  <el-form-item label="分类名称" prop="cat_name">
-    <el-input v-model="addCateForm.cat_name"></el-input>
-  </el-form-item>
-  <el-form-item label="父级分类"> 
-    <!-- options用来指定数据源 -->
-    <!-- props用来指定配置对象 -->
-    <!-- v-model 选中的父级分类的数据列表,必须是数组-->
-     <el-cascader
-    :key="getCateForm.cat_id"
-    v-model="selectedKeys"
-    :options="getCateForm"
-    :props="cascaderProps"
-    @change="parentCatehandleChange" 
-    clearable placeholder="请选择分类" filterable></el-cascader>
-  </el-form-item>
-  </el-form>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="addCatedialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="postaddCatepForm">确 定</el-button>
-  </span>
-</el-dialog>
+      title="添加分类"
+      :visible.sync="addCatedialogVisible"
+      @close="handleCloseaddCatedialog"
+      width="50%"
+    >
+      <el-form ref="addCateRef" :model="addCateForm" :rules="addCateFormRules" label-width="100px">
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="addCateForm.cat_name"></el-input>
+        </el-form-item>
+        <el-form-item label="父级分类">
+          <!-- options用来指定数据源 -->
+          <!-- props用来指定配置对象 -->
+          <!-- v-model 选中的父级分类的数据列表,必须是数组-->
+          <el-cascader
+            :key="getCateForm.cat_id"
+            v-model="selectedKeys"
+            :options="getCateForm"
+            :props="cascaderProps"
+            @change="parentCatehandleChange"
+            clearable
+            placeholder="请选择分类"
+            filterable
+          ></el-cascader>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addCatedialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="postaddCatepForm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -99,13 +103,13 @@ export default {
         pagesize: 5
       },
       // 商品分类的数据列表，默认为空
-      catelist:[],
+      catelist: [],
       total: 0,
       columns: [
         { label: "分类名称", prop: "cat_name" },
         {
           label: "是否有效",
-          prop: 'cat_deleted',
+          prop: "cat_deleted",
           // 将当前列定义为模板列
           type: "template",
           // 当前这一列使用模板名称
@@ -123,37 +127,37 @@ export default {
           template: "operate"
         }
       ],
-      addCatedialogVisible:false,
-      getCateForm:[],
+      addCatedialogVisible: false,
+      getCateForm: [],
       // 指定配置对象
-      cascaderProps:{
-        value:'cat_id',
-        label:'cat_name',
-        children:'children',
-        expandTrigger: 'hover',
+      cascaderProps: {
+        value: "cat_id",
+        label: "cat_name",
+        children: "children",
+        expandTrigger: "hover",
         checkStrictly: true
       },
-      addCateForm:{
+      addCateForm: {
         // 将要添加的分类的名称
-        cat_pid:0,
+        cat_pid: 0,
         // 父级分类的Id
-        cat_name:'',
+        cat_name: "",
         // 分类的等级，默认要添加的事1级分类
-        cat_level:0
+        cat_level: 0
       },
       // 添加分类表单的验证规则对象
-      addCateFormRules:{
+      addCateFormRules: {
         cat_name: [
-            { required: true, message: '请输入分类名称', trigger: 'blur' },
-            ]
+          { required: true, message: "请输入分类名称", trigger: "blur" }
+        ]
       },
       // 选中的父级分类的数据列表
-      selectedKeys:[],
+      selectedKeys: []
     };
   },
   created() {
     this.getCatelist();
-    // this.getParentCateList() 
+    // this.getParentCateList()
   },
   methods: {
     // 获取商品分类列表数据
@@ -162,80 +166,86 @@ export default {
         params: this.queryInfo
       });
       if (res.meta.status !== 200) {
-        return this.$message.error("获取商品分类列表失败！");
+        this.$message.error("获取商品分类列表失败！");
+      } else {
+        // 把数据列表，赋值给catelist
+        this.catelist = res.data.result;
+        // 为总条数赋值
+        this.total = res.data.total;
       }
-      // 把数据列表，赋值给catelist
-      this.catelist = res.data.result;
-      // 为总条数赋值
-      this.total = res.data.total
     },
     // 监pagetsize变化
-    handleSizeChange(newSize){
-      this.queryInfo.pagesize = newSize
-      this.getCatelist()
+    handleSizeChange(newSize) {
+      this.queryInfo.pagesize = newSize;
+      this.getCatelist();
     },
     // 监听pagenum改变
-    handleCurrentChange(newPagenum){
-      this.queryInfo.pagenum = newPagenum
-      this.getCatelist()
+    handleCurrentChange(newPagenum) {
+      this.queryInfo.pagenum = newPagenum;
+      this.getCatelist();
     },
     // 显示添加分类框
-    async showaddCateform(){
-      this.getParentCateList() 
-      this.addCatedialogVisible = true
+    async showaddCateform() {
+      this.getParentCateList();
+      this.addCatedialogVisible = true;
     },
     // 获取父级分类的数据列表
-    async getParentCateList(){
-     const {data:res} = await this.$http.get('categories',{params:{
-        type: 2
-      }})
-      if(res.meta.status !== 200) {
-        return this.$http.error("获取父级分类数据失败")
+    async getParentCateList() {
+      const { data: res } = await this.$http.get("categories", {
+        params: {
+          type: 2
+        }
+      });
+      if (res.meta.status !== 200) {
+        this.$http.error("获取父级分类数据失败");
       }
-      this.getCateForm = res.data
+      this.getCateForm = res.data;
       // console.log(this.getCateForm)
     },
     // 选择项发生变化时触发这个函数
-    parentCatehandleChange(){
-      console.log(this.selectedKeys)
+    parentCatehandleChange() {
+      console.log(this.selectedKeys);
       // 如果selectedKeys数组中的length大于0，则说明有选择父级分类
       // 反之，就说明没有选中任何父级分类
-      if(this.selectedKeys.length > 0){
-        this.addCateForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1]
-         // 为当前分类的等级赋值
-        this.addCateForm.cat_level = this.selectedKeys.length
-        return 
-     } else{
-      //  父级分类的id
-      this.addCateForm.cat_pid = 0
-      // 当前分类的等级赋值
-      this.addCateForm.cat_level = 0
-     }
-
+      if (this.selectedKeys.length > 0) {
+        this.addCateForm.cat_pid = this.selectedKeys[
+          this.selectedKeys.length - 1
+        ];
+        // 为当前分类的等级赋值
+        this.addCateForm.cat_level = this.selectedKeys.length;
+        return;
+      } else {
+        //  父级分类的id
+        this.addCateForm.cat_pid = 0;
+        // 当前分类的等级赋值
+        this.addCateForm.cat_level = 0;
+      }
     },
     // 添加分类信息方法
-     postaddCatepForm(){
-      this.$refs.addCateRef.validate( async valid => {
-        if(!valid) {
-          return
+    postaddCatepForm() {
+      this.$refs.addCateRef.validate(async valid => {
+        if (!valid) {
+          return;
         }
-        console.log(this.addCateForm)
-        const {data:res} = await this.$http.post('categories', this.addCateForm)
-        console.log(res)
-        if(res.meta.status !== 201) {
-          return this.$message.error("添加分类失败！")
+        console.log(this.addCateForm);
+        const { data: res } = await this.$http.post(
+          "categories",
+          this.addCateForm
+        );
+        console.log(res);
+        if (res.meta.status !== 201) {
+          this.$message.error("添加分类失败！");
         }
-        return this.$message.success("添加分类成功")
-      })  
+        this.$message.success("添加分类成功");
+      });
     },
     //监听关闭窗口时，清空分类列表数据
-    handleCloseaddCatedialog(){
-      this.$refs.addCateRef.resetFields()
-      this.selectedKeys = []
-      this.addCateForm.cat_level = 0
-      this.addCateForm.cat_pid = 0
+    handleCloseaddCatedialog() {
+      this.$refs.addCateRef.resetFields();
+      this.selectedKeys = [];
+      this.addCateForm.cat_level = 0;
+      this.addCateForm.cat_pid = 0;
     }
-
   }
 };
 </script>
