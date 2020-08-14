@@ -47,7 +47,19 @@
       <el-table :data="attributesForm" style="width: 100%" border>
         <el-table-column type="expand">
           <template slot-scope="props">
-            <el-tag v-for="(item,i) in props.row.attr_vals" :key="i" closable >{{item}}</el-tag>
+            <el-tag v-for="(item,i) in props.row.attr_vals" :key="i" closable  @close="handleclosetag(i,props.row)">{{item}}</el-tag>
+<!--            添加属性tag-->
+            <el-input
+                    class="input-new-tag"
+                    v-if="props.row.addtaginputVisible"
+                    v-model="props.row.inputValue"
+                    ref="saveTagInputRef"
+                    size="small"
+                    @keyup.enter.native="handleInputConfirm(props.row)"
+                    @blur="handleInputConfirm(props.row)"
+            >
+            </el-input>
+            <el-button v-else class="button-new-tag" size="small" @click="showaddtagInput(props.row)">+ New Tag</el-button>
           </template>
         </el-table-column>
         <el-table-column type="index" label="#"></el-table-column>
@@ -145,7 +157,11 @@ export default {
       },
       editparamsdialogVisible: false,
       // 根据id获取的修改数据
-      editparamsForm: {}
+      editparamsForm: {},
+    // //  New Tag显示与隐藏
+    //   addtaginputVisible:false,
+    //   //New Tag输入的值
+    //   inputValue:""
     };
   },
   created() {
@@ -186,10 +202,13 @@ export default {
         if(res.meta.status !== 200){
           this.$message.error("获取列表数据失败")
         }else{
-          console.log(res)
         // 循环遍历attr_vals，将其拆分成一个数组
         res.data.forEach(item => {
           item.attr_vals = item.attr_vals ?item.attr_vals.split(' ') : []
+          //控制文本框的显示与隐藏
+          item.addtaginputVisible = false
+          //文本框中输入的值
+          item.inputValue=''
         })
         this.attributesForm = res.data;
         console.log(this.attributesForm)
@@ -285,6 +304,52 @@ export default {
         .catch(() => {
           this.$message.error("已取消删除")
         });
+    },
+  //  显示与隐藏new tag按钮
+    showaddtagInput(row){
+      row.addtaginputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInputRef.$refs.input.focus();
+      });
+    },
+    //鼠标离开或按enter键时触发
+    async handleInputConfirm(row){
+      console.log("鼠标离开");
+      if(row.inputValue.trim().length === 0){
+        row.addtaginputVisible = false;
+        row.inputValue = ''
+        return
+      }
+    // 若没有return则说明有内容，需要做后续处理
+      row.attr_vals.push(row.inputValue.trim())
+      row.addtaginputVisible = false;
+      row.inputValue = ''
+      const {data:res} = await this.$http.put(`categories/${this.Cateid}/attributes/${row.attr_id}`,{
+        attr_name: row.attr_name,
+        attr_sel: this.activeName,
+        attr_vals: row.attr_vals.join(' ')
+      })
+      if(res.meta.status !== 200){
+        this.$message.error("添加失败")
+        return
+      }
+      this.$message.success("添加成功！")
+      // this.getAttrForm()
+
+    },
+    //关闭tag时触发
+    async handleclosetag(i, row){
+      row.attr_vals.splice(i, 1)
+      const {data:res} = await this.$http.put(`categories/${this.Cateid}/attributes/${row.attr_id}`,{
+        attr_name: row.attr_name,
+        attr_sel: this.activeName,
+        attr_vals: row.attr_vals.join(' ')
+      })
+      if(res.meta.status !== 200){
+        this.$message.error("删除失败")
+        return
+      }
+      this.$message.success("删除成功！")
     }
   },
   // 计算属性
@@ -337,5 +402,9 @@ export default {
 .el-tag{
   margin-right: 5px;
   margin-top:5px;
+}
+.input-new-tag{
+  margin-top:5px;
+  width:150px;
 }
 </style>
