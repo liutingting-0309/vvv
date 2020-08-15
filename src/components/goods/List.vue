@@ -100,43 +100,6 @@
                 total: 0,
                 // 添加商品是否隐藏
                 addGoodsDialogVisible: false,
-                // 添加商品表单数据
-                addGoodsRuleForm: {
-                    goods_name: '',
-                    goods_cat: '',
-                    goods_price: '',
-                    goods_number: '',
-                    goods_weight: '',
-                    goods_introduce: '',
-                    pics: {},
-                    attrs: []
-                },
-                //添加商品验证规则
-                addGoodsRules: {
-                    goods_name: [
-                        {required: true, message: '请输入活动名称', trigger: 'blur'},
-                        {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
-                    ],
-                    goods_cat: [
-                        {required: true, message: '请输入活动名称', trigger: 'blur'},
-                        {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
-                    ],
-                    goods_price: [
-                        {required: true, message: '请输入活动名称', trigger: 'blur'},
-                        {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
-                    ],
-                    goods_number: [
-                        {required: true, message: '请输入活动名称', trigger: 'blur'},
-                        {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
-                    ],
-                    goods_weight: [
-                        {required: true, message: '请输入活动名称', trigger: 'blur'},
-                        {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
-                    ],
-
-
-                },
-
             }
         },
         created() {
