@@ -29,7 +29,7 @@
                 </el-table-column>
                 <el-table-column  label="操作" >
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit"  size="mini" ></el-button>
+                        <el-button type="primary" icon="el-icon-edit"  size="mini" @click="editGood(scope.row.goods_id)"></el-button>
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteGood(scope.row.goods_id)"></el-button>
                     </template>
                 </el-table-column>
@@ -46,44 +46,35 @@
             </el-pagination>
 
         </el-card>
-<!--        添加商品弹框-->
-<!--        <el-dialog-->
-<!--                title="添加商品"-->
-<!--                :visible.sync="addGoodsDialogVisible"-->
-<!--                width="50%"-->
-<!--                :before-close="handleaddgoodsdialogClose">-->
-<!--&lt;!&ndash;            表单区域&ndash;&gt;-->
-<!--            <el-form :model="addGoodsRuleForm" :rules="addGoodsRules" ref="addGoodsRuleForm" label-width="100px" class="demo-ruleForm">-->
-<!--                <el-form-item label="商品名称" prop="goods_name">-->
-<!--                    <el-input v-model="addGoodsRuleForm.goods_name"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="分类列表" prop="goods_cat">-->
-<!--                    <el-input v-model="addGoodsRuleForm.goods_cat"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="价格(元）" prop="goods_price">-->
-<!--                    <el-input v-model="addGoodsRuleForm.goods_price"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="数量" prop="goods_number">-->
-<!--                    <el-input v-model="addGoodsRuleForm.goods_number"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="重量" prop="goods_weight">-->
-<!--                    <el-input v-model="addGoodsRuleForm.goods_weight"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="介绍" prop="goods_introduce">-->
-<!--                    <el-input v-model="addGoodsRuleForm.goods_introduce"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="商品图片" prop="pics">-->
-<!--                    <el-input v-model="addGoodsRuleForm.pics"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="商品参数" prop="attrs">-->
-<!--                    <el-input v-model="addGoodsRuleForm.attrs"></el-input>-->
-<!--                </el-form-item>-->
-<!--            </el-form>-->
-<!--            <span slot="footer" class="dialog-footer">-->
-<!--    <el-button @click="addGoodsDialogVisible = false">取 消</el-button>-->
-<!--    <el-button type="primary" @click="addGoodsDialogVisible = false">确 定</el-button>-->
-<!--  </span>-->
-<!--        </el-dialog>-->
+<!--        修改商品弹框-->
+        <el-dialog
+                title="修改商品信息"
+                :visible.sync="editGoodsDialogVisible"
+                width="50%"
+                :before-close="handleeditgoodsdialogClose">
+<!--            表单区域-->
+            <el-form :model="editGoodsForm" :rules="editGoodsRules" ref="editGoodsFormRef" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="商品名称" prop="goods_name">
+                    <el-input v-model="editGoodsForm.goods_name"></el-input>
+                </el-form-item>
+                <el-form-item label="价格(元）" prop="goods_price">
+                    <el-input v-model="editGoodsForm.goods_price"></el-input>
+                </el-form-item>
+                <el-form-item label="数量" prop="goods_number">
+                    <el-input v-model="editGoodsForm.goods_number"></el-input>
+                </el-form-item>
+                <el-form-item label="重量" prop="goods_weight">
+                    <el-input v-model="editGoodsForm.goods_weight"></el-input>
+                </el-form-item>
+                <el-form-item label="介绍">
+                    <quill-editor v-model="editGoodsForm.goods_introduce"></quill-editor>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="editGoodsDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="upeditGood">确 定</el-button>
+  </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -98,8 +89,27 @@
                 },
                 goodList: [],
                 total: 0,
-                // 添加商品是否隐藏
-                addGoodsDialogVisible: false,
+                // 修改商品是否隐藏
+                editGoodsDialogVisible: false,
+                // 修改商品信息参数
+				editGoodsForm:{
+
+				},
+				//修改商品验证规则
+				editGoodsRules: {
+					goods_name: [
+						{required: true, message: '请输入商品名称', trigger: 'blur'},
+					],
+					goods_price: [
+						{required: true, message: '请输入商品价格', trigger: 'blur'},
+					],
+					goods_number: [
+						{required: true, message: '请输入商品数量', trigger: 'blur'},
+					],
+					goods_weight: [
+						{required: true, message: '请输入商品重量', trigger: 'blur'},
+					],
+				},
             }
         },
         created() {
@@ -151,6 +161,31 @@
                 }
 
             },
+            // 显示修改商品信息弹窗
+            async editGood(id){
+            	const {data:res} = await this.$http.get(`goods/${id}`)
+                if(res.meta.status !== 200){
+                	this.$message.error('获取商品信息失败')
+                    return
+                }
+                // console.log(res)
+                this.editGoodsForm = res.data
+				this. editGoodsDialogVisible=true
+            },
+            // 监听修改窗口关闭时触发
+			handleeditgoodsdialogClose(){
+            	this. editGoodsDialogVisible=false
+            },
+            //提交修改的商品数据
+			async upeditGood(){
+            	const {data:res} = await this.$http.put(`goods/${this.editGoodsForm.goods_id}`,this.editGoodsForm)
+                if(res.meta.status !== 200){
+                	this.$message.error('修改商品信息失败')
+                    return
+                }
+                this.getGoodsList()
+				this. editGoodsDialogVisible=false
+            }
         }
     }
 

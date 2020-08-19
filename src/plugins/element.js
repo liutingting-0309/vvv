@@ -34,7 +34,11 @@ Alert,
 Tabs,
 TabPane,
 Steps,
-Step
+Step,
+CheckboxGroup,
+Checkbox,
+Upload,
+Image,
 } from 'element-ui'
 
 
@@ -71,5 +75,10 @@ Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Steps)
 Vue.use(Step)
+Vue.use(CheckboxGroup)
+Vue.use(Checkbox)
+Vue.use(Upload)
+Vue.use(Image)
+
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
