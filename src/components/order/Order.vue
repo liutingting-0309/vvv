@@ -34,8 +34,8 @@
                     </el-table-column>
                     <el-table-column  label="操作" >
                         <template slot-scope="scope">
-                            <el-button type="primary" icon="el-icon-edit" size="mini" ></el-button>
-                            <el-button type="success" icon="el-icon-location" size="mini"></el-button>
+                            <el-button type="primary" icon="el-icon-edit" size="mini" @click="editaddress()"></el-button>
+                            <el-button type="success" icon="el-icon-location" size="mini" @click="wuliu()"></el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -49,11 +49,49 @@
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="total">
             </el-pagination>
+<!--            修改地址-->
+            <el-dialog
+                    title="修改地址"
+                    :visible.sync="addressdialogVisible"
+                    width="50%"
+                    :before-close="handleaddressClose">
+                <el-form  label-width="100px" value="addressForm" :model="addressForm" :rules="orderRule">
+                    <el-form-item label="省市区/县" prop="address1">
+<!--                        <el-cascader v-model="addressForm.address1" :options="cityData" props="cityProps"></el-cascader>-->
+                        <el-input v-model="addressForm.address1"></el-input>
+                    </el-form-item>
+                    <el-form-item label="详细地址" prop="address2">
+                        <el-input v-model="addressForm.address2"></el-input>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+    <el-button @click="addressdialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addressdialogVisiblee = false">确 定</el-button>
+  </span>
+            </el-dialog>
+<!--            物流弹框-->
+            <el-dialog
+                    title="物流情况"
+                    :visible.sync="wuliudialogVisible"
+                    width="50%"
+                    :before-close="handlewuliuClose">
+                <el-form  label-width="100px" value="addressForm" :model="addressForm" :rules="orderRule">
+                    <el-form-item label="详细地址" prop="address2">
+                        <el-input v-model="addressForm.address2"></el-input>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+    <el-button @click="wuliudialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="wuliudialogVisible = false">确 定</el-button>
+  </span>
+            </el-dialog>
         </el-card>
     </div>
 </template>
 
 <script>
+    import cityData from '../../provinces-china/city_data2016.js'
+
     export default {
     	data(){
     		return {
@@ -74,11 +112,30 @@
                 total:0,
                 // 订单数据列表
                 orderForm:[],
+                // 修改地址弹框是否弹出
+				addressdialogVisible:false,
+                addressForm:{
+					// address1:[],
+					address1:'',
+                    address2:''
+                },
+				orderRule: {
+					address1: [
+				    	{required: true, message: '请输入商品名称', trigger: 'blur'},
+				    ],
+					address2: [
+                    	{required: true, message: '请输入商品价格', trigger: 'blur'},
+				    ]
+                },
+                //城市数据
+				cityData:cityData,
+                // 物流
+				wuliudialogVisible:false,
             }
         },
-        created() {
-			this.getOrderlist()
-		},
+        created(){
+				this.getOrderlist();
+			},
 		methods:{
     		//获取订单数据列表
 			async getOrderlist(){
@@ -102,7 +159,20 @@
 				this.getOrderlist()
 			},
             // 修改订单数据
-
+            editaddress(){
+				this.addressdialogVisible = true
+            },
+            // 监听地址修改框的关闭
+			handleaddressClose(){
+				this.addressdialogVisible = false
+            },
+            // 物流
+			wuliu(){
+                this.wuliudialogVisible = true
+            },
+			handlewuliuClose(){
+				this.wuliudialogVisible = false
+            }
         },
 
     }
