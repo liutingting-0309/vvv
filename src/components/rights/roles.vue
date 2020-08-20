@@ -268,11 +268,9 @@ export default {
       if (confirmResult !== "confirm") {
         this.$message.info("已取消删除！");
       }
-      // console.log('确认删除！')
       const { data: res } = await this.$http.delete(
         "roles/" + role.id + "/rights/" + rightId
       );
-      // console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error("取消权限失败");
       }
@@ -289,7 +287,6 @@ export default {
         this.$message.error("获取权限列表失败！");
       }
       this.setRightList = res.data;
-      console.log(this.setRightList);
 
       // 递归获取三级节点的Id
       this.getLeafKeys(role, this.defKeys);
@@ -316,7 +313,6 @@ export default {
         ...this.$refs.treeRef.getCheckedKeys(),
         ...this.$refs.treeRef.getHalfCheckedKeys()
       ];
-      //  console.log(keys)
       const idStr = keys.join(",");
 
       const { data: res } = await this.$http.post(

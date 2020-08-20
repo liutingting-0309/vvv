@@ -145,7 +145,6 @@
                     return
                 }
                 this.orderForm = res.data.goods
-                console.log(this.orderForm)
                 this.total =res.data.total
             },
             // 监听每页数量变化

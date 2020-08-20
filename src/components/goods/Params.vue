@@ -211,7 +211,6 @@ export default {
           item.inputValue=''
         })
         this.attributesForm = res.data;
-        console.log(this.attributesForm)
         }
        
         

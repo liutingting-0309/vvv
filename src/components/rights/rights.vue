@@ -42,7 +42,7 @@ export default {
   methods: {
     async getrightsForm() {
       const { data: res } = await this.$http.get("rights/list");
-      // console.log(res);
+
       if (res.meta.status !== 200) {
         this.$message.error("获取权限列表失败!");
       }

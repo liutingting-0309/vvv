@@ -168,7 +168,6 @@
                 	this.$message.error('获取商品信息失败')
                     return
                 }
-                // console.log(res)
                 this.editGoodsForm = res.data
 				this. editGoodsDialogVisible=true
             },

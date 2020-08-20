@@ -200,11 +200,10 @@ export default {
         this.$http.error("获取父级分类数据失败");
       }
       this.getCateForm = res.data;
-      // console.log(this.getCateForm)
+
     },
     // 选择项发生变化时触发这个函数
     parentCatehandleChange() {
-      console.log(this.selectedKeys);
       // 如果selectedKeys数组中的length大于0，则说明有选择父级分类
       // 反之，就说明没有选中任何父级分类
       if (this.selectedKeys.length > 0) {
@@ -227,12 +226,10 @@ export default {
         if (!valid) {
           return;
         }
-        console.log(this.addCateForm);
         const { data: res } = await this.$http.post(
           "categories",
           this.addCateForm
         );
-        console.log(res);
         if (res.meta.status !== 201) {
           this.$message.error("添加分类失败！");
         }

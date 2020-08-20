@@ -74,14 +74,12 @@ export default {
     },
      async getMenusList(){
         const { data:res } = await this.$http.get("menus");
-        // console.log(res);
         if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
         this.menulist = res.data
 
     },
     toggleCollpse(){
       this.collpseflag = !this.collpseflag;
-      // console.log(this.collpseflag)
     }
   }
 };

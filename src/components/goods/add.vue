@@ -182,8 +182,6 @@
             },
             //tab切换时触发
  			beforeTabLeave(activeName, oldActiveName){
-				// console.log('将要离开的tab'+oldActiveName)
-				// console.log('将要进入的tab'+activeName)
                 if(oldActiveName == 0  &&this.AddForm.goods_cat.length !==3){
                 	this.$message.error('请选择商品分类！')
                     return false
@@ -191,7 +189,6 @@
 			},
             //tab被选中时触发
 			async tabClicked() {
-				// console.log(this.AddForm.goods_cat)
 				if (this.activeIndex == 1) {
 					const {data: res} = await this.$http.get(`categories/${this.AddForm.goods_cat[2]}/attributes`, {params: {sel: 'many'}})
 					if (res.meta.status !== 200) {
@@ -210,13 +207,11 @@
 						this.$message.error('获取静态参数失败')
 						return
 					}
-				    // console.log(res)
 				    this.onlyAttrForm =  res.data
 				}
 			},
             //图片预览函数
 			handlePreview(file) {
-				console.log(file);
 				// this.previewPath = file.response.data.url
                 this.previewPath = 'http://127.0.0.1:8888/' + file.response.data.tmp_path
                 this.previewVisible = true
@@ -230,18 +225,15 @@
                 const i = this.AddForm.pics.findIndex(x => x.pic === filePath)
                 // 3.调用数组的splice方法,把图片信息对象，从pics数组中移除
                 this.AddForm.pics.splice(i,1)
-                console.log(this.AddForm)
             },
             // 图片上传成功后
 			handleSuccess(response){
-            	console.log(response)
             //    1.拼接得到一个图片信息对象
                 const picInfo = {
             		pic:response.data.tmp_path
                 }
             //    2.将图片信息对象，push到Pics数组中
                 this.AddForm.pics.push(picInfo)
-                console.log(this.AddForm)
 			},
             // 监听图片放大框的关闭
 			handlePreviewClose(){
@@ -259,7 +251,6 @@
                     //深拷贝AddForm,为了防止将goods_cat从数组改成字符串的时候报错,因为v-model中是需要数组，而上传的时候需要字符串
                     const form = _.cloneDeep(this.AddForm)
                     form.goods_cat = form.goods_cat.join(',')
-                    // console.log(form.goods_cat)
                     // 处理动态参数
                     this.manyAttrForm.forEach(item => {
                     	const newInfo = {
@@ -279,7 +270,6 @@
                     form.attrs = this.AddForm.attrs
                     //提交要添加的商品
                     const {data:res} = await this.$http.post('goods',form)
-                    console.log(res)
                     if(res.meta.status !== 201){
                     	this.$message.error("添加商品失败")
                         return
